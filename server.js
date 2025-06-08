@@ -1,5 +1,36 @@
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ host: '0.0.0.0', port: 8080 });
+const http = require('http');
+const fs = require('fs');
+const path = require('path');
+
+// 创建HTTP服务器用于提供静态文件
+const server = http.createServer((req, res) => {
+    const filePath = req.url === '/' ? 'index.html' : req.url.slice(1);
+    const absPath = path.join(__dirname, filePath);
+    fs.readFile(absPath, (err, data) => {
+        if (err) {
+            res.writeHead(404);
+            res.end('File not found');
+        } else {
+            res.writeHead(200, { 'Content-Type': getContentType(filePath) });
+            res.end(data);
+        }
+    });
+});
+
+// 辅助函数：获取文件MIME类型
+function getContentType(filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    switch(ext) {
+        case '.html': return 'text/html';
+        case '.js': return 'text/javascript';
+        case '.css': return 'text/css';
+        default: return 'application/octet-stream';
+    }
+}
+
+// 将WebSocket服务器附加到HTTP服务器
+const wss = new WebSocket.Server({ server });
 
 let waitingPlayer = null;
 let games = new Map(); // 游戏实例存储：gameId -> { players, board, current }
@@ -101,4 +132,6 @@ function checkWin(board, x, y, color) {
     return false;
 }
 
-console.log('服务器启动，端口8080');
+server.listen(8080, '0.0.0.0', () => {
+    console.log('服务器启动，端口8080');
+});
