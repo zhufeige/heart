@@ -1,5 +1,5 @@
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 8080 });
+const wss = new WebSocket.Server({ host: '0.0.0.0', port: 8080 });
 
 let waitingPlayer = null;
 let games = new Map(); // 游戏实例存储：gameId -> { players, board, current }
