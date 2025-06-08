@@ -46,7 +46,20 @@ function connectServer() {
                 break;
             case 'update':
                 updateBoard(data.board);
-                status.textContent = data.current === myColor ? '轮到你落子' : '等待对方落子';
+                // 修复状态显示：比较当前玩家ID与自己的ID
+                const isMyTurn = data.current === myPlayerId;
+                status.textContent = isMyTurn ? '轮到你落子' : '等待对方落子';
+
+                // 控制头像闪烁动画
+                const player1Avatar = document.querySelector('#player1 .avatar');
+                const player2Avatar = document.querySelector('#player2 .avatar');
+                if (data.current === 1) {
+                    player1Avatar.classList.add('avatar-active');
+                    player2Avatar.classList.remove('avatar-active');
+                } else {
+                    player2Avatar.classList.add('avatar-active');
+                    player1Avatar.classList.remove('avatar-active');
+                }
                 break;
             case 'win':
                 status.textContent = data.winner === myColor ? '胜利！' : '失败！';
