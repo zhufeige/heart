@@ -23,6 +23,14 @@ let myPlayerId;
 function connectServer() {
     ws = new WebSocket('ws://10.201.29.37:8080');
     ws.onopen = () => status.textContent = '已连接，等待匹配对手...';
+    ws.onerror = (error) => {
+        status.textContent = '连接失败，请检查服务器地址或网络';
+        console.error('WebSocket错误:', error);
+    };
+    ws.onclose = (event) => {
+        status.textContent = '连接已断开';
+        console.log('WebSocket关闭，代码:', event.code, '原因:', event.reason);
+    };
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         switch (data.type) {
