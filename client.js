@@ -21,7 +21,7 @@ function renderBoard() {
 let myPlayerId;
 
 function connectServer() {
-    ws = new WebSocket('ws://localhost:8080');
+    ws = new WebSocket('ws://10.201.29.37:8080');
     ws.onopen = () => status.textContent = '已连接，等待匹配对手...';
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
