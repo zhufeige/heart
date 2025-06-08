@@ -44,6 +44,18 @@ body {
     margin-bottom: 12px;
     background: #f5e6d3;
     border: 3px solid #d4b996;
+    transition: border-color 0.3s;
+}
+
+/* 当前落子玩家头像绿色闪烁动画 */
+@keyframes greenBlink {
+    0% { border-color: #d4b996; }
+    50% { border-color: #4CAF50; box-shadow: 0 0 8px rgba(76, 175, 80, 0.4); }
+    100% { border-color: #d4b996; }
+}
+
+.avatar-active {
+    animation: greenBlink 1.5s infinite;
 }
 
 /* 准备按钮增强交互 */
