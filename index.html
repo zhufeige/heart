@@ -2,269 +2,30 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>码头退役！</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+SC:wght@700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            color: #fff;
-            font-family: 'Noto Sans SC', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .container {
-            text-align: center;
-            position: relative;
-            z-index: 2;
-        }
-        
-        h1 {
-            font-size: 5rem;
-            font-family: 'Orbitron', sans-serif;
-            margin-bottom: 1rem;
-            background: linear-gradient(to right, #ff4e50, #f9d423);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 10px rgba(255, 78, 80, 0.3);
-            animation: pulse 2s infinite;
-        }
-        
-        .subtitle {
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            opacity: 0.8;
-        }
-        
-        .btn {
-            background: linear-gradient(to right, #ff4e50, #f9d423);
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            color: #fff;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(255, 78, 80, 0.4);
-        }
-        
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(255, 78, 80, 0.6);
-        }
-        
-        .btn:active {
-            transform: translateY(1px);
-        }
-        
-        .particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.5);
-            animation: float 15s infinite linear;
-        }
-        
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px 25px;
-            border-radius: 5px;
-            transform: translateX(200%);
-            transition: transform 0.5s ease;
-            z-index: 100;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-        
-        @keyframes float {
-            0% {
-                transform: translateY(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-        
-        .countdown {
-            font-size: 2rem;
-            margin-top: 2rem;
-            font-family: 'Orbitron', sans-serif;
-            color: #f9d423;
-        }
-        
-        .dock-image {
-            width: 300px;
-            height: 200px;
-            margin: 2rem auto;
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        
-        .dock-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            transition: transform 0.5s ease;
-        }
-        
-        .dock-image:hover img {
-            transform: scale(1.1);
-        }
-        
-        .overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.8));
-        }
-    </style>
+    <title>联机五子棋</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="particles" id="particles"></div>
-    
     <div class="container">
-        <h1>码头退役！</h1>
-        <p class="subtitle">一个时代的结束，新篇章的开始</p>
-        
-        <div class="dock-image">
-            <img src="matou.png" alt="码头">
-            <div class="overlay"></div>
+        <div id="players">
+            <h2>玩家列表</h2>
+            <div id="player1" class="player-box">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23ddd'/></svg>" class="avatar">
+                <p class="player-name">玩家1</p>
+                <button class="ready-btn" disabled>准备</button>
+            </div>
+            <div id="player2" class="player-box">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='40' fill='%23ddd'/></svg>" class="avatar">
+                <p class="player-name">玩家2</p>
+                <button class="ready-btn" disabled>准备</button>
+            </div>
         </div>
-        
-        <div class="countdown" id="countdown">退役倒计时：00:00:00</div>
-        
-        <button class="btn" id="confirmBtn">确认收到通知</button>
+        <div class="game-area">
+            <h1>联机五子棋</h1>
+            <p id="status">等待对手连接...</p>
+            <div id="board"></div>
+        </div>
     </div>
-    
-    <div class="notification" id="notification">
-        通知已发送，感谢您的关注！
-    </div>
-    
-    <script>
-        // 创建粒子效果
-        const particlesContainer = document.getElementById('particles');
-        const particleCount = 50;
-        
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // 随机大小
-            const size = Math.random() * 15 + 5;
-
-        // 倒计时功能
-        function updateCountdown() {
-            const now = new Date();
-            const targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 17, 0, 0);
-            let diff = targetTime - now;
-
-            if (diff < 0) {
-                diff = 0;
-            }
-
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-            const countdownElement = document.getElementById('countdown');
-            countdownElement.textContent = `退役倒计时：${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }
-
-        // 初始更新
-        updateCountdown();
-        // 每秒更新
-        setInterval(updateCountdown, 1000);
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            
-            // 随机位置
-            const posX = Math.random() * 100;
-            const posY = Math.random() * 100;
-            particle.style.left = `${posX}%`;
-            particle.style.top = `${posY}%`;
-            
-            // 随机动画延迟
-            const delay = Math.random() * 15;
-            particle.style.animationDelay = `${delay}s`;
-            
-            // 随机动画时长
-            const duration = Math.random() * 10 + 10;
-            particle.style.animationDuration = `${duration}s`;
-            
-            particlesContainer.appendChild(particle);
-        }
-        
-        // 倒计时功能
-        function updateCountdown() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            
-            document.getElementById('countdown').textContent = `${hours}:${minutes}:${seconds}`;
-        }
-        
-        setInterval(updateCountdown, 1000);
-        updateCountdown();
-        
-        // 通知功能
-        const confirmBtn = document.getElementById('confirmBtn');
-        const notification = document.getElementById('notification');
-        
-        confirmBtn.addEventListener('click', function() {
-            notification.classList.add('show');
-            
-            setTimeout(function() {
-                notification.classList.remove('show');
-            }, 3000);
-        });
-    </script>
+    <script src="client.js"></script>
 </body>
 </html>
