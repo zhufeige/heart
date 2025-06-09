@@ -1,0 +1,194 @@
+:root {
+    --primary-color: #2a9df4;
+    --secondary-color: #e3f2fd;
+    --text-color: #333;
+}
+
+/* 天气特效容器基础样式 */
+#weather-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    overflow: hidden;
+}
+
+/* 多云特效 */
+.weather-effects.cloudy::before,
+.weather-effects.cloudy::after {
+    content: '';
+    position: absolute;
+    background: #f0f8ff;
+    border-radius: 50%;
+    animation: float 20s linear infinite;
+}
+
+.weather-effects.cloudy::before {
+    width: 80px;
+    height: 50px;
+    top: 20%;
+    left: -10%;
+    box-shadow: 20px 10px 0 10px #f0f8ff, 40px 20px 0 15px #f0f8ff;
+}
+
+.weather-effects.cloudy::after {
+    width: 120px;
+    height: 70px;
+    top: 50%;
+    left: -15%;
+    animation-delay: -5s;
+    box-shadow: 30px 15px 0 20px #f0f8ff, 60px 30px 0 25px #f0f8ff;
+}
+
+/* 下雨特效 */
+.weather-effects.light-rain::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(173, 216, 230, 0.2) 10px,
+        rgba(173, 216, 230, 0.2) 12px
+    );
+    animation: rain 0.8s linear infinite;
+}
+
+/* 关键帧动画 */
+animation float {
+    to {
+        transform: translateX(120vw);
+    }
+}
+animation rain {
+    to {
+        transform: translateY(20px);
+    }
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #e0f7fa, #b3e5fc);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+#cityInput {
+    flex: 1;
+    padding: 12px 20px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#cityInput:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+#searchBtn {
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#searchBtn:hover {
+    background: #1976d2;
+}
+
+.weather-card {
+    background: var(--secondary-color);
+    padding: 25px;
+    border-radius: 15px;
+    margin: 20px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.weather-card:hover {
+    transform: translate(calc((-1 + 2*random())*5px), calc((-1 + 2*random())*5px));
+}
+
+/* 其他天气类型的特效样式可在此继续添加 */
+
+.weather-detail {
+    font-size: 18px;
+    margin: 12px 0;
+    color: #222; /* 加深文字颜色提升对比度 */
+    font-weight: 500; /* 增加字重 */
+}
+
+.weather-detail span:first-child {
+    color: #666;
+    margin-right: 8px;
+}
+
+.forecast-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 15px 0;
+}
+
+.forecast-card {
+    flex: 0 0 120px;
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+}
+
+.forecast-card:hover {
+    transform: translate(calc((-1 + 2*random())*5px), calc((-1 + 2*random())*5px));
+}
+
+.forecast-date {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.forecast-temp {
+    font-size: 16px;
+    margin: 5px 0;
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    .weather-detail {
+        font-size: 16px;
+    }
+    .forecast-container {
+        gap: 10px;
+    }
+}

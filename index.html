@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>力口实时天气预报</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="weather-effects"></div>
+    <div class="container">
+        <h1>🌤️ 力口天气预报</h1
+        <div class="search-box">
+            <input type="text" id="cityInput" placeholder="输入城市名称（如：北京）" autocomplete="off">
+            <button id="searchBtn">查询</button>
+        </div>
+        <div class="weather-card" id="currentWeather">
+            <h2>当前天气</h2>
+            <div class="weather-detail"><span>城市：</span><span id="city">-</span></div>
+            <div class="weather-detail"><span>天气状况：</span><span id="weather">-</span></div>
+            <div class="weather-detail"><span>温度：</span><span id="temperature">-</span>℃</div>
+            <div class="weather-detail"><span>湿度：</span><span id="humidity">-</span>%</div>
+            <div class="weather-detail"><span>风力：</span><span id="windPower">-</span>级</div>
+        </div>
+        <div class="forecast-container" id="forecastWeather"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
