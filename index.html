@@ -3,27 +3,713 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>力口实时天气预报</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>考试周生存指南</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Noto+Sans+SC:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding-bottom: 50px;
+        }
+        
+        /* 粒子背景效果 */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            animation: glow 2s infinite alternate;
+        }
+        
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #ffd166, #06d6a0, #118ab2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.5rem;
+            color: #ffd166;
+            margin-bottom: 2rem;
+            font-weight: 700;
+        }
+        
+        /* 考试元素浮动效果 */
+        .floating-elements {
+            position: relative;
+            height: 300px;
+            margin: 3rem 0;
+        }
+        
+        .floating-element {
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.8;
+            animation: float 15s infinite ease-in-out;
+            filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));
+        }
+        
+        .element-1 { top: 10%; left: 5%; animation-duration: 18s; }
+        .element-2 { top: 30%; left: 20%; animation-duration: 22s; }
+        .element-3 { top: 15%; right: 15%; animation-duration: 16s; }
+        .element-4 { top: 60%; left: 15%; animation-duration: 20s; }
+        .element-5 { top: 70%; right: 10%; animation-duration: 19s; }
+        .element-6 { top: 45%; left: 45%; animation-duration: 25s; }
+        
+        /* 吐槽卡片区 */
+        .complaints {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .complaint-card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: perspective(1000px) rotateY(0deg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .complaint-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd166, #06d6a0, #118ab2);
+            z-index: -1;
+            border-radius: 17px;
+        }
+        
+        .complaint-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 12, 41, 0.9);
+            z-index: -1;
+            border-radius: 15px;
+        }
+        
+        .complaint-card:hover {
+            transform: perspective(1000px) rotateY(5deg) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        }
+        
+        .complaint-card h3 {
+            color: #ffd166;
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+        
+        .complaint-card p {
+            line-height: 1.6;
+        }
+        
+        /* 进度条 */
+        .progress-section {
+            margin: 3rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .progress-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #ffd166;
+        }
+        
+        .progress-container {
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #ff6b6b, #ffd166);
+            border-radius: 20px;
+            position: relative;
+            animation: progress 3s infinite alternate;
+            box-shadow: 0 0 15px rgba(255, 209, 102, 0.5);
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            font-size: 1.2rem;
+            z-index: 2;
+        }
+        
+        /* 弹幕区 */
+        .danmaku-container {
+            height: 200px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            margin: 3rem 0;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .danmaku {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 1.2rem;
+            color: #fff;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+            animation: danmaku 15s linear infinite;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        /* 按钮 */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            min-width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ffd166);
+            color: #0f0c29;
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(45deg, #118ab2, #06d6a0);
+            color: white;
+        }
+        
+        .btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(2px) scale(0.98);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(45deg, #ff6b6b, #ffd166);
+            color: #0f0c29;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        /* 动画定义 */
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.5); }
+            100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); }
+        }
+        
+        @keyframes progress {
+            0% { width: 5%; }
+            100% { width: 95%; }
+        }
+        
+        @keyframes danmaku {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            .subtitle { font-size: 1.2rem; }
+            .complaints { grid-template-columns: 1fr; }
+            .floating-elements { height: 200px; }
+        }
+        
+        /* 考试倒计时 */
+        .countdown {
+            text-align: center;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        .countdown-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #ffd166;
+        }
+        
+        .countdown-timer {
+            font-size: 2.5rem;
+            font-weight: bold;
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(45deg, #ff6b6b, #ffd166);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+    </style>
 </head>
 <body>
-    <div id="weather-effects"></div>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    
+    <!-- 通知区域 -->
+    <div class="notification" id="notification"></div>
+    
     <div class="container">
-        <h1>🌤️ 力口天气预报</h1
-        <div class="search-box">
-            <input type="text" id="cityInput" placeholder="输入城市名称（如：北京）" autocomplete="off">
-            <button id="searchBtn">查询</button>
+        <header>
+            <h1>考试周生存指南</h1>
+            <div class="subtitle">熬夜、咖啡、课本和永无止境的复习...</div>
+        </header>
+        
+        <!-- 考试倒计时 -->
+        <div class="countdown">
+            <div class="countdown-title">距离第一门考试还有</div>
+            <div class="countdown-timer" id="countdown-timer">3天 12:45:38</div>
         </div>
-        <div class="weather-card" id="currentWeather">
-            <h2>当前天气</h2>
-            <div class="weather-detail"><span>城市：</span><span id="city">-</span></div>
-            <div class="weather-detail"><span>天气状况：</span><span id="weather">-</span></div>
-            <div class="weather-detail"><span>温度：</span><span id="temperature">-</span>℃</div>
-            <div class="weather-detail"><span>湿度：</span><span id="humidity">-</span>%</div>
-            <div class="weather-detail"><span>风力：</span><span id="windPower">-</span>级</div>
+        
+        <!-- 浮动考试元素 -->
+        <div class="floating-elements">
+            <div class="floating-element element-1">📚</div>
+            <div class="floating-element element-2">📝</div>
+            <div class="floating-element element-3">☕</div>
+            <div class="floating-element element-4">⏰</div>
+            <div class="floating-element element-5">😴</div>
+            <div class="floating-element element-6">💯</div>
         </div>
-        <div class="forecast-container" id="forecastWeather"></div>
+        
+        <!-- 吐槽卡片区 -->
+        <div class="complaints">
+            <div class="complaint-card">
+                <h3>时间都去哪了？</h3>
+                <p>昨天刚开学，今天就考试？一学期有16周，前15周就像温水泡脚，考试周把洗脚水喝了！</p>
+            </div>
+            <div class="complaint-card">
+                <h3>咖啡成瘾</h3>
+                <p>咖啡摄入量已经超过人体极限，现在看到咖啡因分子式都能认出来。心跳加速不是因为紧张，是因为咖啡过量！</p>
+            </div>
+            <div class="complaint-card">
+                <h3>睡眠是什么？</h3>
+                <p>连续三天只睡了10小时，现在看课本上的字都在跳舞。梦里都在背公式，醒来发现背的是错的...</p>
+            </div>
+            <div class="complaint-card">
+                <h3>重点？全是重点！</h3>
+                <p>老师："考试范围是整本书，重点我上课都讲过。" 我：您上课讲过话？</p>
+            </div>
+            <div class="complaint-card">
+                <h3>记忆只有7秒</h3>
+                <p>翻开书：马冬梅。合上书：马什么梅？考试时：孙红雷！这知识它不进脑子啊！</p>
+            </div>
+            <div class="complaint-card">
+                <h3>复习的错觉</h3>
+                <p>以为自己复习了80%，一考试发现只覆盖了20%。最可怕的是，考的都是那80%没复习的！</p>
+            </div>
+        </div>
+        
+        <!-- 进度条 -->
+        <div class="progress-section">
+            <h2 class="progress-title">考试周复习进度</h2>
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+                <div class="progress-text">努力加载中...（被手机分心）</div>
+            </div>
+        </div>
+        
+        <!-- 弹幕区 -->
+        <div class="danmaku-container" id="danmaku">
+            <!-- 弹幕将通过JS生成 -->
+        </div>
+        
+        <!-- 按钮 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" id="coffee-btn">我需要更多咖啡！</button>
+            <button class="btn btn-primary" id="distract-btn">我又分心了！</button>
+            <button class="btn btn-secondary" id="sleep-btn">再熬一夜就好了</button>
+            <button class="btn btn-secondary" id="panic-btn">开始恐慌复习</button>
+        </div>
     </div>
-    <script src="app.js"></script>
+
+    <!-- 粒子背景库 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 粒子背景初始化
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.1, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#ffffff",
+                    opacity: 0.1,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out"
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                }
+            }
+        });
+        
+        // 弹幕内容
+        const danmakuTexts = [
+            "考试范围是整本书！",
+            "重点？我上课都讲过！",
+            "咖啡续命中...",
+            "这知识它不进脑子啊！",
+            "复习了又好像没复习",
+            "背了三天，考了三分",
+            "预习+复习=女娲补天",
+            "眼睛：我会了！脑子：不，你不会",
+            "考试周脱发量加倍",
+            "又双叒叕要考试了",
+            "考试周让我体验了时间压缩技术",
+            "复习的都没考，考的都没复习",
+            "图书馆是我的第二个家",
+            "现在流的泪，都是选课时脑子进的水",
+            "考完我要睡三天三夜！",
+            "求老师手下留情！",
+            "通宵复习伤不起",
+            "考试周让我怀疑人生",
+            "为什么知识点这么多？",
+            "我需要一个记忆面包！"
+        ];
+        
+        // 生成弹幕
+        const danmakuContainer = document.getElementById('danmaku');
+        
+        function createDanmaku() {
+            const danmaku = document.createElement('div');
+            danmaku.className = 'danmaku';
+            danmaku.textContent = danmakuTexts[Math.floor(Math.random() * danmakuTexts.length)];
+            
+            // 随机位置和颜色
+            const top = Math.random() * 150;
+            const color = `hsl(${Math.random() * 360}, 80%, 70%)`;
+            
+            danmaku.style.top = `${top}px`;
+            danmaku.style.color = color;
+            danmaku.style.animationDuration = `${10 + Math.random() * 15}s`;
+            
+            danmakuContainer.appendChild(danmaku);
+            
+            // 动画结束后移除元素
+            setTimeout(() => {
+                danmaku.remove();
+            }, 15000);
+        }
+        
+        // 初始创建一些弹幕
+        for (let i = 0; i < 10; i++) {
+            setTimeout(() => {
+                createDanmaku();
+            }, i * 1000);
+        }
+        
+        // 每2秒创建一个新弹幕
+        setInterval(createDanmaku, 2000);
+        
+        // 按钮交互 - 修复版
+        document.getElementById('coffee-btn').addEventListener('click', function() {
+            showNotification('☕ 咖啡续杯成功！你又可以再战三小时！');
+            // 添加咖啡杯动画
+            addCoffeeAnimation();
+        });
+        
+        document.getElementById('sleep-btn').addEventListener('click', function() {
+            showNotification('🌙 加油！熬夜伤身，但考试周不熬不行啊！');
+            // 添加睡觉动画
+            addSleepAnimation();
+        });
+        
+        document.getElementById('distract-btn').addEventListener('click', function() {
+            showNotification('📱 放下手机！专心复习！');
+            // 添加手机动画
+            addPhoneAnimation();
+        });
+        
+        document.getElementById('panic-btn').addEventListener('click', function() {
+            showNotification('🔥 恐慌模式启动！疯狂复习中...');
+            // 添加火焰动画
+            addFireAnimation();
+        });
+        
+        // 显示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.opacity = '1';
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+            }, 3000);
+        }
+        
+        // 添加咖啡杯动画
+        function addCoffeeAnimation() {
+            const coffee = document.createElement('div');
+            coffee.innerHTML = '☕';
+            coffee.style.position = 'fixed';
+            coffee.style.fontSize = '3rem';
+            coffee.style.left = '50%';
+            coffee.style.top = '50%';
+            coffee.style.transform = 'translate(-50%, -50%)';
+            coffee.style.opacity = '0';
+            coffee.style.zIndex = '100';
+            coffee.style.transition = 'all 1s';
+            coffee.style.pointerEvents = 'none';
+            
+            document.body.appendChild(coffee);
+            
+            setTimeout(() => {
+                coffee.style.opacity = '1';
+                coffee.style.fontSize = '5rem';
+            }, 10);
+            
+            setTimeout(() => {
+                coffee.style.opacity = '0';
+                coffee.style.transform = 'translate(-50%, -150%)';
+                coffee.style.fontSize = '2rem';
+            }, 1000);
+            
+            setTimeout(() => {
+                document.body.removeChild(coffee);
+            }, 2000);
+        }
+        
+        // 添加睡觉动画
+        function addSleepAnimation() {
+            const sleep = document.createElement('div');
+            sleep.innerHTML = '😴';
+            sleep.style.position = 'fixed';
+            sleep.style.fontSize = '3rem';
+            sleep.style.left = '50%';
+            sleep.style.top = '50%';
+            sleep.style.transform = 'translate(-50%, -50%)';
+            sleep.style.opacity = '0';
+            sleep.style.zIndex = '100';
+            sleep.style.transition = 'all 1s';
+            sleep.style.pointerEvents = 'none';
+            
+            document.body.appendChild(sleep);
+            
+            setTimeout(() => {
+                sleep.style.opacity = '1';
+                sleep.style.fontSize = '5rem';
+            }, 10);
+            
+            setTimeout(() => {
+                sleep.style.opacity = '0';
+                sleep.style.transform = 'translate(-50%, -150%)';
+                sleep.style.fontSize = '2rem';
+            }, 1000);
+            
+            setTimeout(() => {
+                document.body.removeChild(sleep);
+            }, 2000);
+        }
+        
+        // 添加手机动画
+        function addPhoneAnimation() {
+            const phone = document.createElement('div');
+            phone.innerHTML = '📱';
+            phone.style.position = 'fixed';
+            phone.style.fontSize = '3rem';
+            phone.style.left = '50%';
+            phone.style.top = '50%';
+            phone.style.transform = 'translate(-50%, -50%)';
+            phone.style.opacity = '0';
+            phone.style.zIndex = '100';
+            phone.style.transition = 'all 1s';
+            phone.style.pointerEvents = 'none';
+            
+            document.body.appendChild(phone);
+            
+            setTimeout(() => {
+                phone.style.opacity = '1';
+                phone.style.fontSize = '5rem';
+            }, 10);
+            
+            setTimeout(() => {
+                phone.style.opacity = '0';
+                phone.style.transform = 'translate(200%, -50%)';
+                phone.style.fontSize = '2rem';
+            }, 1000);
+            
+            setTimeout(() => {
+                document.body.removeChild(phone);
+            }, 2000);
+        }
+        
+        // 添加火焰动画
+        function addFireAnimation() {
+            const fire = document.createElement('div');
+            fire.innerHTML = '🔥';
+            fire.style.position = 'fixed';
+            fire.style.fontSize = '3rem';
+            fire.style.left = '50%';
+            fire.style.top = '50%';
+            fire.style.transform = 'translate(-50%, -50%)';
+            fire.style.opacity = '0';
+            fire.style.zIndex = '100';
+            fire.style.transition = 'all 1s';
+            fire.style.pointerEvents = 'none';
+            
+            document.body.appendChild(fire);
+            
+            setTimeout(() => {
+                fire.style.opacity = '1';
+                fire.style.fontSize = '5rem';
+            }, 10);
+            
+            setTimeout(() => {
+                fire.style.opacity = '0';
+                fire.style.transform = 'translate(-50%, -150%)';
+                fire.style.fontSize = '2rem';
+            }, 1000);
+            
+            setTimeout(() => {
+                document.body.removeChild(fire);
+            }, 2000);
+        }
+        
+        // 考试倒计时
+        function updateCountdown() {
+            const now = new Date();
+            const examDate = new Date(2025, 5, 16, 13, 30, 0);
+            
+            const diff = examDate - now;
+            
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            if (diff <= 0) {
+                document.getElementById('countdown-timer').innerHTML = '考试时间：13:30-15:30<br><span style="color:#ff6b6b">考试已开始！</span>';
+            } else {
+                document.getElementById('countdown-timer').innerHTML = `距离嵌入式考试还剩：${days}天<br>${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}<br>考试时间：2025年6月16日(星期一)13:30-15:30`;
+            }
+            return;
+        }
+        
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
 </body>
 </html>
