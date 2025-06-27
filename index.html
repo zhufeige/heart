@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deepseek客服</title>
+    <title>DeepSeek 智能票务客服</title>
     <style>
         :root {
             --primary-color: #6e48aa;
@@ -214,6 +214,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const memoryId = new Date().valueOf()
         const chatContainer = document.getElementById('chat-container');
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
@@ -239,11 +240,14 @@
             let botResponse = '';
 
             // 发送消息到后端（流式接收）
-            fetch('http://localhost:8080/likou/test?memoryId=1&message=' + encodeURIComponent(message), {
+            fetch(`http://10.201.29.37:8080/likou/test?memoryId=${memoryId}&message=${encodeURIComponent(message)}`, {
                 method: 'GET',
+                mode: 'cors', // 明确启用CORS模式
                 headers: {
-                    'Content-Type': 'application/json',
-                }
+                    'Accept': 'text/event-stream', // 匹配后端produces
+                    'Content-Type': 'text/plain' // 更合适的类型
+                },
+                credentials: 'omit' // 不需要credentials
             })
                 .then(response => {
                     if (!response.ok) {
