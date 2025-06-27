@@ -3,1416 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>嵌入式系统学习通作业题练习</title>
+    <title>DeepSeek 智能票务客服</title>
     <style>
+        :root {
+            --primary-color: #6e48aa;
+            --secondary-color: #9d50bb;
+            --bg-color: #f5f7fa;
+            --user-bubble: #e3f2fd;
+            --bot-bubble: #ffffff;
+            --text-color: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
-        }
-        
-        header {
-            background: linear-gradient(to right, #2c3e50, #4a6491);
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 20px;
+            padding: 1rem;
             text-align: center;
+            box-shadow: var(--shadow);
             position: relative;
+            z-index: 10;
         }
-        
-        h1 {
-            font-size: 2.2rem;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-        
-        .subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-        
-        .tabs {
-            display: flex;
-            background: #f0f0f0;
-            border-bottom: 2px solid #4a6491;
-            overflow-x: auto;
-            padding: 0 10px;
-        }
-        
-        .tab {
-            padding: 15px 25px;
-            cursor: pointer;
+
+        .header h1 {
+            font-size: 1.5rem;
             font-weight: 600;
-            transition: all 0.3s;
-            white-space: nowrap;
-            border-bottom: 3px solid transparent;
         }
-        
-        .tab:hover {
-            background: #e0e0e0;
-        }
-        
-        .tab.active {
-            background: #4a6491;
-            color: white;
-            border-bottom: 3px solid #ffcc00;
-        }
-        
-        .content {
-            padding: 25px;
-            min-height: 500px;
-        }
-        
-        .homework-info {
-            background: #e8f4ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border-left: 4px solid #4a6491;
-        }
-        
-        .homework-title {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-        
-        .question {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e0e0e0;
-            transition: all 0.3s;
-        }
-        
-        .question:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .question-header {
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px dashed #ddd;
+            flex-direction: column;
+            gap: 1rem;
+            padding-bottom: 80px;
         }
-        
-        .question-number {
-            font-weight: bold;
-            color: #4a6491;
-            font-size: 1.1rem;
-        }
-        
-        .question-type {
-            background: #4a6491;
-            color: white;
-            padding: 3px 10px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-        }
-        
-        .question-content {
-            font-size: 1.1rem;
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-        
-        .options {
-            margin-left: 20px;
-        }
-        
-        .option {
-            margin-bottom: 12px;
-            padding-left: 30px;
+
+        .message {
+            max-width: 80%;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            line-height: 1.4;
             position: relative;
+            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
         }
-        
-        .option input {
-            position: absolute;
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--user-bubble);
+            border-bottom-right-radius: 0.2rem;
+            color: #1a237e;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--bot-bubble);
+            border-bottom-left-radius: 0.2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: #666;
+            margin-top: 0.3rem;
+            text-align: right;
+        }
+
+        .input-container {
+            position: fixed;
+            bottom: 0;
             left: 0;
-            top: 3px;
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
-        
-        .option label {
-            cursor: pointer;
-            display: block;
-            padding: 5px 0;
-        }
-        
-        .controls {
+            right: 0;
+            padding: 1rem;
+            background-color: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 0.5rem;
         }
-        
-        button {
-            padding: 12px 30px;
-            background: #4a6491;
+
+        #message-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 2rem;
+            outline: none;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        #message-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        #send-button {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: 2rem;
+            padding: 0 1.5rem;
             cursor: pointer;
-            font-size: 1rem;
             font-weight: 600;
-            transition: all 0.3s;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, opacity 0.2s;
         }
-        
-        button:hover {
-            background: #3a547e;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+
+        #send-button:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
         }
-        
-        button:active {
-            transform: translateY(0);
+
+        #send-button:active {
+            transform: scale(0.98);
         }
-        
-        #submitBtn {
-            background: #27ae60;
+
+        .typing-indicator {
+            display: inline-block;
+            padding: 0.8rem 1rem;
+            background-color: var(--bot-bubble);
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            align-self: flex-start;
+            margin-bottom: 1rem;
         }
-        
-        #submitBtn:hover {
-            background: #219653;
+
+        .typing-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #666;
+            margin: 0 2px;
+            animation: typingAnimation 1.4s infinite ease-in-out;
         }
-        
-        #resetBtn {
-            background: #e74c3c;
+
+        .typing-dot:nth-child(1) {
+            animation-delay: 0s;
         }
-        
-        #resetBtn:hover {
-            background: #c0392b;
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
         }
-        
-        .result-panel {
-            background: #e8f4ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 25px;
-            text-align: center;
-            display: none;
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
         }
-        
-        .score-display {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
+
+        @keyframes typingAnimation {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
         }
-        
-        .result-message {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+
+        /* Markdown 样式增强 */
+        .bot-message pre {
+            background-color: #f8f8f8;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
         }
-        
-        .correct {
-            background-color: #e8f6ef;
-            border-left: 4px solid #27ae60;
+
+        .bot-message code {
+            font-family: 'Courier New', monospace;
+            background-color: #f0f0f0;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.3rem;
+            font-size: 0.9em;
         }
-        
-        .incorrect {
-            background-color: #fce8e6;
-            border-left: 4px solid #e74c3c;
-        }
-        
-        .answer-feedback {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 5px;
-            font-weight: 500;
-        }
-        
-        .correct .answer-feedback {
-            color: #27ae60;
-            background: rgba(39, 174, 96, 0.1);
-        }
-        
-        .incorrect .answer-feedback {
-            color: #e74c3c;
-            background: rgba(231, 76, 60, 0.1);
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: white;
-            margin-top: 30px;
-            font-size: 0.9rem;
-        }
-        
+
+        /* 响应式设计 */
         @media (max-width: 768px) {
-            .container {
-                border-radius: 10px;
-            }
-            
-            header {
-                padding: 15px;
-            }
-            
-            h1 {
-                font-size: 1.8rem;
-            }
-            
-            .content {
-                padding: 15px;
-            }
-            
-            .tabs {
-                flex-wrap: nowrap;
-                overflow-x: auto;
-            }
-            
-            .tab {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .controls {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            button {
-                width: 100%;
+            .message {
+                max-width: 90%;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>嵌入式系统学习通作业题练习</h1>
-            <p class="subtitle">选择作业，完成题目，提交后查看正确答案与得分</p>
-        </header>
-        
-        <div class="tabs" id="tabsContainer">
-            <!-- 选项卡由JS生成 -->
-        </div>
-        
-        <div class="content">
-            <div class="homework-info">
-                <h2 class="homework-title" id="currentHomework">作业1：单选题（共16题）</h2>
-                <p>请选择每个问题的正确答案，完成后点击"提交作业"按钮查看结果。</p>
-            </div>
-            
-            <div id="questionsContainer">
-                <!-- 题目由JS生成 -->
-            </div>
-            
-            <div class="controls">
-                <button id="submitBtn">提交作业</button>
-                <button id="resetBtn">重置答案</button>
-            </div>
-            
-            <div class="result-panel" id="resultPanel">
-                <div class="score-display" id="scoreDisplay">得分：0/16</div>
-                <div class="result-message" id="resultMessage"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="footer">
-        <p>嵌入式系统题库练习应用 &copy; 2025</p>
-    </div>
+<div class="header">
+    <h1>DeepSeek 智能助手</h1>
+</div>
 
-    <script>
-        // 题库数据（简化版，实际应用中可替换为完整数据）
-        const homeworkData = [
-            {
-                title: "作业1：单选题（共16题）",
-                questions: [
-                    {
-                        id: 1,
-                        content: "某系统需要大量的高速缓存，最合适的存储器是( )。",
-                        options: ["A. Flash", "B. SRAM", "C. DRAM", "D. EEPROM"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 2,
-                        content: "下面总线采用同步时序协议的是( )。",
-                        options: ["A. SATA", "B. RS232C", "C. PCI", "D. USB"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 3,
-                        content: "优先级倒置出现的条件有( )。",
-                        options: ["A. 优先级任务调度", "B. 以上都是", "C. 抢占式任务调度", "D. 资源共享"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 4,
-                        content: "下面关于哈佛结构描述正确的是( )。",
-                        options: [
-                            "A. 程序存储空间与数据存储空间合并",
-                            "B. 存储空间与IO空间合并",
-                            "C. 存储空间与IO空间分离",
-                            "D. 程序存储空间与数据存储空间分离"
-                        ],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 5,
-                        content: "USB2.0规范支持的速率有( )。",
-                        options: ["A. 480Mbps", "B. 12Mbps", "C. 以上都是", "D. 1.5Mbps"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 6,
-                        content: "下面总线采用异步时序协议的是( )。",
-                        options: ["A. USB", "B. PCI", "C. I2C", "D. SPI"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 7,
-                        content: "并行接口 SRAM存储器接口并不一定需要( )。",
-                        options: ["A. 数据总线", "B. 时钟信号", "C. 控制总线", "D. 地址总线"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 8,
-                        content: "以下哪个处理器属于嵌入式处理器?( )",
-                        options: ["A. 奔腾", "B. MP3播放器", "C. 看门狗", "D. S3C44B0x"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 9,
-                        content: "ARM7TDMI在开始执行代码时应处于( )。",
-                        options: ["A. ARM状态", "B. Thumb状态", "C. 不确定", "D. 由用户通过硬件设计指定"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 10,
-                        content: "USB接口鼠标最合适的传输类型为( )。",
-                        options: ["A. 批量传输", "B. 中断传输", "C. 等时传输", "D. 控制传输"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 11,
-                        content: "下面哪一类嵌入式处理器最适合于做FFT(快速傅立叶变换)计算( )。",
-                        options: ["A. 嵌入式微处理器", "B. 以上都不合适", "C. 微控制器", "D. DSP"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 12,
-                        content: "下面哪一类嵌入式处理器最适合于用于工业控制( )。",
-                        options: ["A. 微控制器", "B. 嵌入式微处理器", "C. 以上都不合适", "D. DSP"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 13,
-                        content: "以下哪个不是嵌入式系统的特点( )。",
-                        options: ["A. 可靠性", "B. 实时性", "C. 专用性", "D. 通用性"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 14,
-                        content: "下面哪一种工作模式不属于ARM异常模式( )。",
-                        options: ["A. 系统模式", "B. 数据访问终止模式", "C. 管理模式", "D. 快速中断模式"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 15,
-                        content: "在嵌入式系统设计中，进行硬件版图设计是在进行( )时完成。",
-                        options: ["A. 软硬件设计", "B. 需求分析", "C. 系统集成", "D. 体系结构设计"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 16,
-                        content: "下述哪种实时编程结构中的任务优先级不相同( )。",
-                        options: [
-                            "A. 前后台系统",
-                            "B. 抢先式实时操作系统",
-                            "C. 非抢先式实时操作系统",
-                            "D. 查询实时编程结构"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    }
-                ]
-            },
-            {
-                title: "作业2：单选题（共16题）",
-                questions: [
-                    {
-                        id: 1,
-                        content: "USB接口移动硬盘最合适的传输类型为( )。",
-                        options: ["A. 中断传输", "B. 批量传输", "C. 等时传输", "D. 控制传输"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 2,
-                        content: "下面总线采用分布式仲裁的是( )。",
-                        options: ["A. AMBA", "B. I2C", "C. USB", "D. PCI"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 3,
-                        content: "嵌入式Linux操作系统一般在ROM中存放的布局并不包括( )。",
-                        options: ["A. 内核参数区", "B. Bootloader", "C. 交叉编译器", "D. Linux内核"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 4,
-                        content: "嵌入式操作系统的主要目标并不包括( )。",
-                        options: [
-                            "A. 实时处理能力",
-                            "B. 强大多任务支持",
-                            "C. 与硬件的交互能力",
-                            "D. 代码体积"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 5,
-                        content: "指令“ADD R2,R1,#10”的寻址方式为( )。",
-                        options: ["A. 堆栈寻址", "B. 寄存器间接寻址", "C. 多寄存器寻", "D. 立即寻址"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 6,
-                        content: "实时系统操作的正确性取决于( )。",
-                        options: [
-                            "A. 逻辑设计的正确性和相应操作执行时间",
-                            "B. 以上都不是",
-                            "C. 相应操作执行时间",
-                            "D. 逻辑设计的正确性"
-                        ],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 7,
-                        content: "ARM7TDMI的工作状态包括( )。",
-                        options: ["A. ARM状态和 Thumb状态", "B. 就绪状态和运行状态", "C. 测试状态和运行状态", "D. 挂起状态和就绪状态"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 8,
-                        content: "嵌入式系统最常用的数据传送方式是( )。",
-                        options: ["A. 查询", "B. DMA", "C. 中断", "D. I/O处理机"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 9,
-                        content: "在嵌入式系统中，操作系统的作用是什么( )。",
-                        options: ["A. 提供用户界面", "B. 减少系统性能", "C. 管理硬件资源", "D. 增加系统复杂性"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 10,
-                        content: "下列关于 DMA描述不正确的是( )。",
-                        options: [
-                            "A. 内存可以被 CPU访问，也可以被 DMA控制器访问",
-                            "B. DMA可以和 CPU并行工作",
-                            "C. 数据的输入和输出需要经过CPU，再由DMA控制器访问内存",
-                            "D. DMA开始前,CPU需要初始化DMA控制器,结束后,DMA控制器产生中断"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 11,
-                        content: "下面关于冯·诺依曼结构描述正确的是( )。",
-                        options: [
-                            "A. 程序存储空间与数据存储空间分离",
-                            "B. 程序存储空间与数据存储空间合并",
-                            "C. 存储空间与IO空间合并",
-                            "D. 存储空间与IO空间分离"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 12,
-                        content: "下面总线采用集中式仲裁的是( )。",
-                        options: ["A. CAN", "B. I2C", "C. USB", "D. PCI"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 13,
-                        content: "某系统需要小量的高速缓存，最合适的存储器是( )。",
-                        options: ["A. EEPROM", "B. Flash", "C. DRAM", "D. SRAM"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 14,
-                        content: "下面哪一种工作模式不属于ARM特权模式( )。",
-                        options: ["A. 管理模式", "B. 数据访问终止模式", "C. 系统模式", "D. 用户模式"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 15,
-                        content: "以下哪个是嵌入式系统的典型应用( )。",
-                        options: ["A. 服务器", "B. 工作站", "C. 智能手机", "D. 个人电脑"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 16,
-                        content: "某系统需要永久存放小量参数，而且频繁访问，最合适的存储器是( )。",
-                        options: ["A. EEPROM", "B. Flash", "C. DRAM", "D. SRAM"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    }
-                ]
-            },
-            {
-                title: "作业3：单选题（共16题）",
-                questions: [
-                    {
-                        id: 1,
-                        content: "某系统需要永久存放高速度写的数据，最合适的存储器是( )。",
-                        options: ["A. SRAM", "B. FRAM", "C. Flash", "D. EEPROM"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 2,
-                        content: "下面哪个系统属于嵌入式系统( )。",
-                        options: [
-                            "A. 联想OPhone手机",
-                            "B. 联想T400笔记本计算机",
-                            "C. “天河一号”计算机系统",
-                            "D. 联想S10上网本"
-                        ],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 3,
-                        content: "以下哪个是嵌入式系统开发中常用的编程语言( )。",
-                        options: ["A. HTML", "B. Java", "C. Python", "D. C"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 4,
-                        content: "嵌入式系统有别于其他系统的最大特点是( )。",
-                        options: ["A. 嵌入专用", "B. 高可靠", "C. 低成本", "D. 低功耗"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 5,
-                        content: "以下哪个不是嵌入式系统设计的主要目标?( )",
-                        options: ["A. 低成本", "B. 实时要求高", "C. 超高性能", "D. 低功耗"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 6,
-                        content: "基于查询的实时编程结构的实时性取决于( )。",
-                        options: [
-                            "A. 任务切换时间",
-                            "B. 最长任务执行时间",
-                            "C. 所有其它任务执行时间之和",
-                            "D. 中断响应时间"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 7,
-                        content: "某系统需要永久存放大量不再修改的数据，最合适的存储器是( )。",
-                        options: ["A. Flash", "B. SRAM", "C. DRAM", "D. EEPROM"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 8,
-                        content: "在嵌入式系统设计中，嵌入式操作系统选型是在进行( )时完成。",
-                        options: ["A. 体系结构设计", "B. 软硬件设计", "C. 系统集成", "D. 需求分析"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 9,
-                        content: "下列关于 GPIO描述正确的是( )。",
-                        options: [
-                            "A. GPIO通常用于连接外部的 SDRAM，进行高速传输",
-                            "B. CPU可以通过编程，决定GPIO是输入、输出的通信功能，但不能是双向的",
-                            "C. GPIO可以用于模拟Flash的接口，对Flash存储器进行读写操作",
-                            "D. GPIO可以由 CPU编程决定方向，但不能查询其状态"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 10,
-                        content: "指令 LDR R0,[R1,#4]的寻址方式为( )。",
-                        options: ["A. 基址变址寻址", "B. 寄存器间接寻址", "C. 多寄存器寻址", "D. 相对寻址"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 11,
-                        content: "下面总线属于主从结构且支持多主设备的是( )。",
-                        options: ["A. 以太网", "B. 令牌总线", "C. USB总线", "D. PCI总线"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 12,
-                        content: "下面总线属于主从结构且单主设备的是( )。",
-                        options: ["A. AMBA总线", "B. USB总线", "C. 以太网", "D. 令牌总线"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 13,
-                        content: "下述哪一种功能单元不属于I/O接口电路。( )",
-                        options: ["A. UART", "B. 定时/计数器", "C. GPIO", "D. LED"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 14,
-                        content: "下述哪个操作系统是实时操作系统( )。​",
-                        options: ["A. Windows XP", "B. Win CE 6.0", "C. μClinux", "D. Windows Vista"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 15,
-                        content: "指令“ADD R0,R1,R2”的寻址方式为( )。",
-                        options: ["A. 寄存器间接寻址", "B. 寄存器寻址", "C. 多寄存器寻址", "D. 立即寻址"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 16,
-                        content: "在嵌入式系统中，中断的作用是什么( )。",
-                        options: ["A. 终止程序", "B. 启动程序", "C. 暂停程序", "D. 切换程序"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    }
-                ]
-            },
-            {
-                title: "作业4：单选题（共16题）",
-                questions: [
-                    {
-                        id: 1,
-                        content: "下列有关 Flash存储器的描述，不正确的是( )。",
-                        options: [
-                            "A. Flash存储器的读操作与SRAM存储器的读操作基本相同",
-                            "B. Flash存储器的写操作与 SDRAM存储器的写操作基本相同",
-                            "C. Flash存储器属于非易失的存储器",
-                            "D. Flash存储器在写入信息前必须首先擦除原有信息"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 2,
-                        content: "以下哪个是嵌入式系统中的存储设备( )。",
-                        options: ["A. 硬盘", "B. 固态硬盘", "C. 光盘", "D. EEPROM"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 3,
-                        content: "ARM处理器的异常的正确理解应该是( )。",
-                        options: ["A. 以上都是", "B. 外部中断", "C. 内部异常", "D. 系统调用"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 4,
-                        content: "关于ARM处理器的异常描述不正确的是( )。",
-                        options: [
-                            "A. 外部中断会引起异常",
-                            "B. 复位属于异常",
-                            "C. 除数为零会引起异常",
-                            "D. 所有异常都要返回"
-                        ],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 5,
-                        content: "下面总线不属于主从结构的是( )。",
-                        options: ["A. I2C", "B. USB", "C. PCI", "D. 以太网"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 6,
-                        content: "在嵌入式系统中，什么是看门狗定时器( )。",
-                        options: [
-                            "A. 用于防止系统崩溃的定时器",
-                            "B. 用于系统启动的定时器",
-                            "C. 用于监控系统时间的定时器",
-                            "D. 用于定时执行任务的定时器"
-                        ],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 7,
-                        content: "下面总线不属于对等结构的是( )。",
-                        options: ["A. 令牌网", "B. 以太网", "C. IEEE1394", "D. PCI"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 8,
-                        content: "下面哪个系统不属于嵌入式系统( )。",
-                        options: ["A. “银河玉衡”核心路由器", "B. GPS接收机", "C. MP3播放器", "D. “银河”巨型计算机"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 9,
-                        content: "从层次结构来看，嵌入式系统包括( )。",
-                        options: ["A. 实时操作系统和应用软件", "B. 板级支持包", "C. 硬件层", "D. 以上都是"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 10,
-                        content: "基于中断的实时编程结构的实时性取决于( )。",
-                        options: [
-                            "A. 任务切换时间",
-                            "B. 最长任务执行时间",
-                            "C. 所有其它任务执行时间之和",
-                            "D. 中断响应时间"
-                        ],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 11,
-                        content: "μClinux与标准Linux最大的区别在于( )。",
-                        options: [
-                            "A. 任务调度算法",
-                            "B. 内存管理",
-                            "C. 应用开发模式",
-                            "D. 文件系统"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 12,
-                        content: "硬实时系统要求( )。",
-                        options: [
-                            "A. 事件响应实时",
-                            "B. 事件和任务响应都不实时",
-                            "C. 事件和任务响应都实时",
-                            "D. 任务响应实时"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 13,
-                        content: "下面关于 DRAM存储器描述错误的是( )。",
-                        options: [
-                            "A. DRAM存储器需要对存储内容定时刷新",
-                            "B. DRAM存储器主要依靠电容的电荷存储效应记忆信息",
-                            "C. DRAM存储器具有单位空间存储容量大的特点",
-                            "D. DRAM存储器属于非易失的存储器"
-                        ],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 14,
-                        content: "评价一个实时操作系统的技术指标并不包括( )。",
-                        options: [
-                            "A. 确定性",
-                            "B. 任务调度算法",
-                            "C. 代码体积",
-                            "D. 上下文切换时间"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 15,
-                        content: "由于受到某种强干扰导致程序“跑飞”，ARM处理器的最可能进入哪一种工作模式( )。",
-                        options: [
-                            "A. 管理模式",
-                            "B. 未定义指令中止模式",
-                            "C. 数据访问终止模式",
-                            "D. 系统模式"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 16,
-                        content: "非抢先式实时操作系统的实时性取决于( )。",
-                        options: [
-                            "A. 所有其它任务执行时间之和",
-                            "B. 最长任务执行时间",
-                            "C. 中断响应时间",
-                            "D. 任务切换时间"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    }
-                ]
-            },
-            {
-                title: "作业5：单选题（共16题）",
-                questions: [
-                    {
-                        id: 1,
-                        content: "下面总线设备既是主设备又是从设备的是( )。",
-                        options: ["A. DMAC", "B. USB控制器", "C. UART", "D. CPU"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 2,
-                        content: "指令“LDMIA R0!,{R1,R2,R3,R4}”的寻址方式为( )。",
-                        options: ["A. 寄存器间接寻址", "B. 多寄存器寻址", "C. 立即寻址", "D. 堆栈寻址"],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 3,
-                        content: "关于 ARM子程序和 Thumb子程序互相调用描述正确的是( )。",
-                        options: [
-                            "A. 只要遵循一定调用的规则,仅能Thumb子程序调用ARM子程序。",
-                            "B. 系统初始化之后，ARM处理器只能工作在一种状态，不存在互相调用。",
-                            "C. 只要遵循一定调用的规则, Thumb子程序和 ARM子程序就可以互相调用。",
-                            "D. 只要遵循一定调用的规则,仅能ARM子程序调用Thumb子程序。"
-                        ],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 4,
-                        content: "在嵌入式系统设计中，嵌入式处理器选型是在进行( )时完成。",
-                        options: ["A. 系统集成", "B. 需求分析", "C. 软硬件设计", "D. 体系结构设计"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 5,
-                        content: "在嵌入式系统设计中，软硬件协同设计方法与传统设计方法的最大不同之处在于( )。",
-                        options: [
-                            "A. 协同测试",
-                            "B. 协同验证",
-                            "C. 软硬件分开描述",
-                            "D. 软硬件统一描述"
-                        ],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 6,
-                        content: "RS232C使用无硬件握手最简单的双机互联中，下面( )信号不是必须的。",
-                        options: ["A. DTR", "B. GND", "C. TXD", "D. RXD"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 7,
-                        content: "下面哪个操作系统不是嵌入式操作系统( )。",
-                        options: ["A. Windows XP", "B. μC/OS-II", "C. Win CE 6.0", "D. μClinux"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 8,
-                        content: "嵌入式操作系统一般通过什么手段来解决代码体积与嵌入式应用多样性的问题( )。",
-                        options: [
-                            "A. 使用压缩软件对操作系统进行压缩",
-                            "B. 使用可定制的操作系统",
-                            "C. 增大嵌入式设备的存储容量",
-                            "D. 将操作系统分布在多个处理器上运行"
-                        ],
-                        correctAnswer: "B",
-                        type: "单选题"
-                    },
-                    {
-                        id: 9,
-                        content: "抢先式实时操作系统的实时性取决于( )。",
-                        options: [
-                            "A. 任务切换时间",
-                            "B. 最长任务执行时间",
-                            "C. 所有其它任务执行时间之和",
-                            "D. 中断响应时间"
-                        ],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 10,
-                        content: "下面哪种实时编程结构不可重入函数必须进行互斥处理( )。",
-                        options: [
-                            "A. 抢占式实时操作系统",
-                            "B. 查询实时编程结构",
-                            "C. 非抢占式实时操作系统",
-                            "D. 前后台系统"
-                        ],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 11,
-                        content: "（在嵌入式系统中，通常使用哪种类型的处理器( )。）",
-                        options: ["A. CPU", "B. FPGA", "C. GPU", "D. DSP"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 12,
-                        content: "在嵌入式系统设计中，软硬件划分是在进行( )时完成。",
-                        options: ["A. 需求分析", "B. 系统集成", "C. 体系结构设计", "D. 软硬件设计"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 13,
-                        content: "在总线时序协议中,时序主要用于描述( )出现在总线上的定位方式。",
-                        options: ["A. 高电平", "B. 上升沿", "C. 事件", "D. 时钟信号"],
-                        correctAnswer: "C",
-                        type: "单选题"
-                    },
-                    {
-                        id: 14,
-                        content: "在嵌入式系统中，什么是固件( )。",
-                        options: ["A. 硬件", "B. 软件", "C. 操作系统", "D. 介于硬件和软件之间的程序"],
-                        correctAnswer: "D",
-                        type: "单选题"
-                    },
-                    {
-                        id: 15,
-                        content: "以下有关ARM处理器工作状态的描述中( )是不正确的。",
-                        options: ["A. 切换工作状态时必须保存现场。", "B. 系统复位后自动处于ARM工作状态。", "C. 在程序执行过程中，微处理器可以随时在两种工作状态之间切换。", "D. ARM处理器有两种工作状态。"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    },
-                    {
-                        id: 16,
-                        content: "下列关于RS232C描述不正确的是( )。",
-                        options: ["A. RS232C采用同步通信协议", "B. RS232C使用负逻辑规定逻辑电平，-5V~-15V表示逻辑“1”", "C. RS232C引脚包含信号地", "D. RS232C采用非归零、双极性编码"],
-                        correctAnswer: "A",
-                        type: "单选题"
-                    }
-                ]
-            },
-            {
-                 title: "作业6：多选题（共10题）",
-        questions: [
-            {
-                id: 1,
-                content: "抢先式实时操作系统的优点是( )。",
-                options: [
-                    "A. 如果任务之间抢占 CPU 控制权处理不好，会产生系统崩溃、死机等严重后果",
-                    "B. 调用不可重入型函数时，要满足互斥条件",
-                    "C. 实时性好",
-                    "D. 优先级高的任务只要具备了运行的条件，就可以立即运行"
-                ],
-                correctAnswer: "CD",
-                type: "多选题"
-            },
-            {
-                id: 2,
-                content: "嵌入式系统有哪些特点( )。",
-                options: [
-                    "A. 嵌入式系统开发需要专门工具",
-                    "B. 嵌入式系统速度快、系统可靠性高",
-                    "C. 嵌入式系统系统精简，容易与软件集成",
-                    "D. 软件代码质量高",
-                    "E. 嵌入式系统功耗低、体积小、专用性强"
-                ],
-                correctAnswer: "ABCDE",
-                type: "多选题"
-            },
-            {
-                id: 3,
-                content: "使用 Host-Target 联合开发嵌入式应用，什么是必须的( )。",
-                options: [
-                    "A. Windows操作系统",
-                    "B. 交叉编译器",
-                    "C. 宿主机",
-                    "D. 目标机"
-                ],
-                correctAnswer: "BCD",
-                type: "多选题"
-            },
-            {
-                id: 4,
-                content: "进行嵌入式操作系统选择的时候考虑因素为( )。",
-                options: [
-                    "A. 可移植性",
-                    "B. 进入市场的时间",
-                    "C. 中文内核支持",
-                    "D. 系统定制能力",
-                    "E. 已有的技术积累",
-                    "F. 成本"
-                ],
-                correctAnswer: "ABCDEF",
-                type: "多选题"
-            },
-            {
-                id: 5,
-                content: "下面哪些操作系统不是嵌入式操作系统( )。",
-                options: [
-                    "A. μCLinux",
-                    "B. Red-hat Linux",
-                    "C. Ubuntu Linux",
-                    "D. SUSE Linux"
-                ],
-                correctAnswer: "BCD",
-                type: "多选题"
-            },
-            {
-                id: 6,
-                content: "下面哪个系统不属于嵌入式系统( )。",
-                options: [
-                    "A. “银河”巨型计算机",
-                    "B. “曙光”计算机",
-                    "C. MP4播放器",
-                    "D. IBM X60笔记本计算机"
-                ],
-                correctAnswer: "ABD",
-                type: "多选题"
-            },
-            {
-                id: 7,
-                content: "实时操作系统的特点及基本功能是( )。",
-                options: [
-                    "A. 基本功能有任务管理、任务间同步和通信、存储器优化管理等",
-                    "B. 首要任务是调度一切可利用的资源完成实时任务",
-                    "C. 具有实时性、能支持实时系统工作的操作系统",
-                    "D. 特点是规模小，中断被屏蔽的时间很短，中断处理时间短，任务切换很快",
-                    "E. 着眼于提高系统的使用效率，要能满足对时间的限制和要求"
-                ],
-                correctAnswer: "ABCDE",
-                type: "多选题"
-            },
-            {
-                id: 8,
-                content: "计算机总线的特点为( )。",
-                options: [
-                    "A. 是计算机各功能部件互联的主要形式，是各功能部件之间传送信息的公共通路",
-                    "B. 采用一组公共信号线作为计算机各部件之间的通信线",
-                    "C. 所有设备共享一组总线，同一时刻只有一个主设备能够使用总线",
-                    "D. 结构简单、成本低廉，软硬件设计简单，系统易于扩充或者更新"
-                ],
-                correctAnswer: "ABCD",
-                type: "多选题"
-            },
-            {
-                id: 9,
-                content: "中断响应过程包括( )。",
-                options: [
-                    "A. 到中断向量表相应入口地址取指令执行，该处为跳转指令",
-                    "B. 执行跳转指令，跳转到中断服务子程序处执行",
-                    "C. 中断控制器通过 IRQ/FIQ 向 CPU 发出中断请求",
-                    "D. CPU 响应中断并查询中断源得到中断向量表入口地址",
-                    "E. 中断源向中断控制器发出中断请求"
-                ],
-                correctAnswer: "ABCDE",
-                type: "多选题"
-            },
-            {
-                id: 10,
-                content: "以下属于嵌入式系统开发工具的是( )。",
-                options: [
-                    "A. 浏览器",
-                    "B. 仿真器",
-                    "C. 编译器",
-                    "D. 调试器"
-                ],
-                correctAnswer: "BCD",
-                type: "多选题"
-            }
-        ]
-    }
-];
+<div class="chat-container" id="chat-container">
+    <!-- 聊天消息将在这里动态添加 -->
+</div>
 
+<div class="input-container">
+    <input type="text" id="message-input" placeholder="输入消息..." autocomplete="off">
+    <button id="send-button">发送</button>
+</div>
 
-        // 当前选中的作业索引
-        let currentHomeworkIndex = 0;
-        // 用户答案存储
-        let userAnswers = {};
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
 
-        // 初始化应用
-        function initApp() {
-            createTabs();
-            renderQuestions(currentHomeworkIndex);
-            setupEventListeners();
-        }
+        // 添加示例欢迎消息
+        addBotMessage("你好！我是DeepSeek智能助手，有什么可以帮你的吗？");
 
-        // 创建选项卡
-        function createTabs() {
-            const tabsContainer = document.getElementById('tabsContainer');
-            
-            homeworkData.forEach((homework, index) => {
-                const tab = document.createElement('div');
-                tab.className = 'tab';
-                if (index === currentHomeworkIndex) {
-                    tab.classList.add('active');
+        // 发送消息函数
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message === '') return;
+
+            // 添加用户消息到聊天界面
+            addUserMessage(message);
+            messageInput.value = '';
+            messageInput.focus();
+
+            // 显示"正在输入"指示器
+            const typingIndicator = showTypingIndicator();
+
+            // 创建机器人消息容器（初始为空）
+            const botMessageElement = createBotMessageContainer();
+            let botResponse = '';
+
+            // 发送消息到后端（流式接收）
+            fetch('http://localhost:8080/likou/test?memoryId=1&message=' + encodeURIComponent(message), {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-                tab.textContent = `作业${index + 1}`;
-                tab.dataset.index = index;
-                
-                tab.addEventListener('click', () => {
-                    // 更新当前选中的作业索引
-                    currentHomeworkIndex = index;
-                    // 更新选项卡激活状态
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    // 渲染题目
-                    renderQuestions(index);
-                    // 更新作业标题
-                    document.getElementById('currentHomework').textContent = homeworkData[index].title;
-                    // 隐藏结果面板
-                    document.getElementById('resultPanel').style.display = 'none';
-                });
-                
-                tabsContainer.appendChild(tab);
-            });
-        }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('网络响应不正常');
+                    }
 
-        // 渲染题目
-        function renderQuestions(homeworkIndex) {
-            const container = document.getElementById('questionsContainer');
-            container.innerHTML = '';
-            
-            const homework = homeworkData[homeworkIndex];
-            
-            homework.questions.forEach((question, qIndex) => {
-                const questionEl = document.createElement('div');
-                questionEl.className = 'question';
-                questionEl.dataset.id = `${homeworkIndex}-${qIndex}`;
-                
-                // 问题头部（编号和类型）
-                const header = document.createElement('div');
-                header.className = 'question-header';
-                header.innerHTML = `
-                    <div class="question-number">题目 ${question.id}</div>
-                    <div class="question-type">${question.type}</div>
-                `;
-                questionEl.appendChild(header);
-                
-                // 问题内容
-                const content = document.createElement('div');
-                content.className = 'question-content';
-                content.textContent = question.content;
-                questionEl.appendChild(content);
-                
-                // 选项
-                const options = document.createElement('div');
-                options.className = 'options';
-                
-                question.options.forEach((option, oIndex) => {
-                    const optionEl = document.createElement('div');
-                    optionEl.className = 'option';
-                    
-                    const optionLetter = String.fromCharCode(65 + oIndex); // A, B, C...
-                    const inputId = `q-${homeworkIndex}-${qIndex}-${oIndex}`;
-                    
-                    const input = document.createElement('input');
-                    input.type = question.type === '单选题' ? 'radio' : 'checkbox';
-                    input.name = `q-${homeworkIndex}-${qIndex}`;
-                    input.id = inputId;
-                    input.value = optionLetter;
-                    
-                    // 如果之前有答案，恢复选择状态
-                    const answerKey = `${homeworkIndex}-${qIndex}`;
-                    if (userAnswers[answerKey]) {
-                        if (question.type === '单选题') {
-                            if (userAnswers[answerKey] === optionLetter) {
-                                input.checked = true;
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder('utf-8');
+
+                    function readStream() {
+                        return reader.read().then(({done, value}) => {
+                            if (done) {
+                                removeTypingIndicator(typingIndicator);
+                                addMessageTime(botMessageElement);
+                                return;
                             }
-                        } else {
-                            if (userAnswers[answerKey].includes(optionLetter)) {
-                                input.checked = true;
-                            }
-                        }
+
+                            // 解码数据块并追加到消息
+                            const chunk = decoder.decode(value, {stream: true});
+                            botResponse += chunk;
+
+                            // 更新消息容器的内容（逐步显示）
+                            botMessageElement.querySelector('.message-content').innerHTML = formatResponse(botResponse);
+
+                            // 自动滚动到底部
+                            scrollToBottom();
+
+                            // 继续读取下一个数据块
+                            return readStream();
+                        });
                     }
-                    
-                    input.addEventListener('change', () => {
-                        saveAnswer(homeworkIndex, qIndex, question.type);
-                    });
-                    
-                    const label = document.createElement('label');
-                    label.htmlFor = inputId;
-                    label.textContent = option;
-                    
-                    optionEl.appendChild(input);
-                    optionEl.appendChild(label);
-                    options.appendChild(optionEl);
+
+                    return readStream();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    removeTypingIndicator(typingIndicator);
+                    addBotMessage("抱歉，出现了错误，请稍后再试。");
                 });
-                
-                questionEl.appendChild(options);
-                container.appendChild(questionEl);
-            });
         }
 
-        // 保存用户答案
-        function saveAnswer(homeworkIndex, qIndex, type) {
-            const answerKey = `${homeworkIndex}-${qIndex}`;
-            
-            if (type === '单选题') {
-                const selected = document.querySelector(`input[name="q-${homeworkIndex}-${qIndex}"]:checked`);
-                userAnswers[answerKey] = selected ? selected.value : '';
-            } else {
-                // 多选题
-                const selected = document.querySelectorAll(`input[name="q-${homeworkIndex}-${qIndex}"]:checked`);
-                const values = Array.from(selected).map(input => input.value).sort().join('');
-                userAnswers[answerKey] = values;
+        // 创建机器人消息容器
+        function createBotMessageContainer() {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message bot-message';
+            messageElement.innerHTML = '<div class="message-content"></div>';
+            chatContainer.appendChild(messageElement);
+            scrollToBottom();
+            return messageElement;
+        }
+
+        // 添加消息时间戳
+        function addMessageTime(messageElement) {
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const timeElement = document.createElement('div');
+            timeElement.className = 'message-time';
+            timeElement.textContent = time;
+            messageElement.appendChild(timeElement);
+        }
+
+        // 格式化响应内容（简单Markdown支持）
+        function formatResponse(text) {
+            // 简单处理换行
+            return text.replace(/\n/g, '<br>')
+                // 粗体
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // 代码块
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                // 行内代码
+                .replace(/`(.*?)`/g, '<code>$1</code>');
+        }
+
+        // 添加用户消息到聊天界面
+        function addUserMessage(text) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message user-message';
+
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            messageElement.innerHTML = `
+                <div>${text}</div>
+                <div class="message-time">${time}</div>
+            `;
+
+            chatContainer.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        // 添加机器人消息到聊天界面
+        function addBotMessage(text) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message bot-message';
+
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+            messageElement.innerHTML = `
+                <div>${formatResponse(text)}</div>
+                <div class="message-time">${time}</div>
+            `;
+
+            chatContainer.appendChild(messageElement);
+            scrollToBottom();
+        }
+
+        // 显示"正在输入"指示器
+        function showTypingIndicator() {
+            const indicator = document.createElement('div');
+            indicator.className = 'typing-indicator';
+            indicator.id = 'typing-indicator';
+            indicator.innerHTML = `
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            `;
+
+            chatContainer.appendChild(indicator);
+            scrollToBottom();
+            return indicator;
+        }
+
+        // 移除"正在输入"指示器
+        function removeTypingIndicator(indicator) {
+            if (indicator && indicator.parentNode) {
+                indicator.parentNode.removeChild(indicator);
             }
         }
 
-        // 提交作业
-        function submitHomework() {
-            const homework = homeworkData[currentHomeworkIndex];
-            let score = 0;
-            let totalQuestions = homework.questions.length;
-            
-            homework.questions.forEach((question, qIndex) => {
-                const answerKey = `${currentHomeworkIndex}-${qIndex}`;
-                const userAnswer = userAnswers[answerKey] || '';
-                const questionEl = document.querySelector(`.question[data-id="${currentHomeworkIndex}-${qIndex}"]`);
-                
-                // 移除之前的反馈
-                const existingFeedback = questionEl.querySelector('.answer-feedback');
-                if (existingFeedback) {
-                    existingFeedback.remove();
-                }
-                
-                const feedback = document.createElement('div');
-                feedback.className = 'answer-feedback';
-                
-                if (userAnswer === question.correctAnswer) {
-                    score++;
-                    questionEl.classList.add('correct');
-                    questionEl.classList.remove('incorrect');
-                    feedback.textContent = `✓ 回答正确！你的答案：${userAnswer}`;
-                } else {
-                    questionEl.classList.add('incorrect');
-                    questionEl.classList.remove('correct');
-                    feedback.textContent = `✗ 回答错误！你的答案：${userAnswer}，正确答案：${question.correctAnswer}`;
-                }
-                
-                questionEl.appendChild(feedback);
-            });
-            
-            // 显示得分
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            const resultMessage = document.getElementById('resultMessage');
-            const resultPanel = document.getElementById('resultPanel');
-            
-            scoreDisplay.textContent = `得分：${score}/${totalQuestions}`;
-            
-            // 根据得分显示不同的消息
-            const percentage = (score / totalQuestions) * 100;
-            if (percentage >= 90) {
-                resultMessage.textContent = "太棒了！你的知识掌握非常扎实！";
-            } else if (percentage >= 70) {
-                resultMessage.textContent = "做得不错！继续加油！";
-            } else if (percentage >= 50) {
-                resultMessage.textContent = "及格了，但还需要更多练习！";
-            } else {
-                resultMessage.textContent = "需要加强学习，再接再厉！";
+        // 滚动到底部
+        function scrollToBottom() {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // 事件监听
+        sendButton.addEventListener('click', sendMessage);
+
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
             }
-            
-            resultPanel.style.display = 'block';
-            
-            // 禁用所有选项
-            document.querySelectorAll('input').forEach(input => {
-                input.disabled = true;
-            });
-        }
-
-        // 重置答案
-        function resetAnswers() {
-            // 清除用户答案
-            Object.keys(userAnswers).forEach(key => {
-                if (key.startsWith(`${currentHomeworkIndex}-`)) {
-                    delete userAnswers[key];
-                }
-            });
-            
-            // 清除所有选择
-            document.querySelectorAll('input').forEach(input => {
-                input.checked = false;
-                input.disabled = false;
-            });
-            
-            // 清除反馈
-            document.querySelectorAll('.question').forEach(question => {
-                question.classList.remove('correct', 'incorrect');
-                const feedback = question.querySelector('.answer-feedback');
-                if (feedback) {
-                    feedback.remove();
-                }
-            });
-            
-            // 隐藏结果面板
-            document.getElementById('resultPanel').style.display = 'none';
-        }
-
-        // 设置事件监听器
-        function setupEventListeners() {
-            document.getElementById('submitBtn').addEventListener('click', submitHomework);
-            document.getElementById('resetBtn').addEventListener('click', resetAnswers);
-        }
-
-        // 页面加载完成后初始化
-        window.addEventListener('DOMContentLoaded', initApp);
-    </script>
+        });
+    });
+</script>
 </body>
 </html>
