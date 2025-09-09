@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>五子棋游戏</h1>
+        <div class="game-info">
+            <div class="current-player">
+                当前玩家: <span id="current-player">黑子</span>
+            </div>
+            <div class="game-status" id="game-status">
+                游戏进行中...
+            </div>
+            <button id="reset-btn" onclick="resetGame()">重新开始</button>
+        </div>
+        
+        <div class="board-container">
+            <canvas id="game-board" width="600" height="600"></canvas>
+        </div>
+        
+        <div class="instructions">
+            <h3>游戏规则:</h3>
+            <ul>
+                <li>黑子先行，白子后行</li>
+                <li>在棋盘上点击放置棋子</li>
+                <li>任意一方在横、竖、斜方向连成五子即获胜</li>
+                <li>点击"重新开始"可重置游戏</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
