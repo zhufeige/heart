@@ -97,7 +97,22 @@ function gameOver() {
     ctx.font = '40px Arial';
     ctx.textAlign = 'center';
     ctx.fillText('游戏结束!', canvas.width/2, canvas.height/2);
+    document.getElementById('restartBtn').style.display = 'block';
 }
+
+function resetGame() {
+    snake = [{x: 10, y: 10}];
+    xVelocity = 0;
+    yVelocity = 0;
+    score = 0;
+    scoreElement.textContent = score;
+    gameRunning = true;
+    document.getElementById('restartBtn').style.display = 'none';
+    generateFood();
+    gameLoop();
+}
+
+document.getElementById('restartBtn').addEventListener('click', resetGame);
 
 // 键盘控制
 document.addEventListener('keydown', (e) => {
