@@ -26,19 +26,42 @@ canvas {
 .mobile-controls {
     display: none;
     margin-top: 20px;
-    text-align: center;
+    position: relative;
+    width: 180px;
+    height: 180px;
+    margin: 20px auto;
 }
 
 .control-btn {
+    position: absolute;
     width: 60px;
     height: 60px;
     font-size: 24px;
-    margin: 5px;
     background-color: #444;
     color: white;
     border: none;
     border-radius: 50%;
     touch-action: manipulation;
+}
+
+.up {
+    top: 0;
+    left: 60px;
+}
+
+.down {
+    bottom: 0;
+    left: 60px;
+}
+
+.left {
+    top: 60px;
+    left: 0;
+}
+
+.right {
+    top: 60px;
+    right: 0;
 }
 
 @media (max-width: 768px) {
