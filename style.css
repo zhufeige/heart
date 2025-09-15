@@ -25,11 +25,11 @@ canvas {
 
 .mobile-controls {
     display: none;
-    margin-top: 20px;
     position: relative;
     width: 180px;
     height: 180px;
     margin: 20px auto;
+    transform: scale(0.9);
 }
 
 .control-btn {
@@ -42,26 +42,31 @@ canvas {
     border: none;
     border-radius: 50%;
     touch-action: manipulation;
+    user-select: none;
 }
 
 .up {
     top: 0;
-    left: 60px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .down {
     bottom: 0;
-    left: 60px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .left {
-    top: 60px;
+    top: 50%;
     left: 0;
+    transform: translateY(-50%);
 }
 
 .right {
-    top: 60px;
+    top: 50%;
     right: 0;
+    transform: translateY(-50%);
 }
 
 @media (max-width: 768px) {
